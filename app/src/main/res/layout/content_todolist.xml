@@ -8,4 +8,8 @@
     tools:context="eu.epitech.todolosit.Todolist"
     tools:showIn="@layout/activity_todolist">
 
+    <ListView
+        android:id="@+id/tasks"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </android.support.constraint.ConstraintLayout>

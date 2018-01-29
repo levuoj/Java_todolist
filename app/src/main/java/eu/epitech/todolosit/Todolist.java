@@ -1,6 +1,7 @@
 package eu.epitech.todolosit;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +9,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class Todolist extends AppCompatActivity {
 
@@ -20,12 +28,18 @@ public class Todolist extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // perso
+        final List<Task> taskList = new ArrayList<Task>();
+        ListView tasks = (ListView) findViewById(R.id.tasks);
+        // perso
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Task task = new Task("Titre", "contenue de folie", new Date());
-                Snackbar.make(view, "Bravo tu as cliqué sur le bouton", Snackbar.LENGTH_LONG)
+                taskList.add(task);
+                Snackbar.make(view, "New taske", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });

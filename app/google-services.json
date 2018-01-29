@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "350581379770",
+    "firebase_url": "https://java-todolist.firebaseio.com",
+    "project_id": "java-todolist",
+    "storage_bucket": "java-todolist.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350581379770:android:8eaf66f7d0efe057",
+        "android_client_info": {
+          "package_name": "eu.epitech.todolosit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "350581379770-7k5s31rh0a53egshchdoap06hnanp3bc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eu.epitech.todolosit",
+            "certificate_hash": "160d8a247795cf1bd603494657132247da3767ab"
+          }
+        },
+        {
+          "client_id": "350581379770-ob38s20u45iak73rg2l5i5geb8iqits9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBd5NWNFQ6WOuprua0Fxf_dnTXpuqYXCDM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "350581379770-ob38s20u45iak73rg2l5i5geb8iqits9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
