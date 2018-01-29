@@ -20,9 +20,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/content_todolist" />
+    <include layout="@layout/content_todolist" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Date;
+
 public class Todolist extends AppCompatActivity {
 
     @Override
@@ -22,6 +24,7 @@ public class Todolist extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Task task = new Task("Titre", "contenue de folie", new Date());
                 Snackbar.make(view, "Bravo tu as cliqué sur le bouton", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
