@@ -1,19 +1,14 @@
-package eu.epitech.todolosit;
+package eu.epitech.todolist;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
-import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.*;
@@ -25,21 +20,15 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
-import eu.epitech.todolosit.Adapter.ListItemAdapter;
-import eu.epitech.todolosit.Model.ToDo;
+import eu.epitech.todolist.Adapter.ListItemAdapter;
+import eu.epitech.todolist.Model.ToDo;
 
 public class Todolist extends AppCompatActivity {
 
@@ -54,6 +43,8 @@ public class Todolist extends AppCompatActivity {
     public MaterialEditText title;
     public MaterialEditText description;
     public MaterialEditText date;
+    public MaterialEditText status;
+    public SeekBar seekBar;
 
     public boolean isUpdate = false;
     public String idUpdate = "";
@@ -69,22 +60,30 @@ public class Todolist extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
+        int currentMax = 20;
+        int currentStep = 10;
+
         dialog = new SpotsDialog(this);
         title = (MaterialEditText) findViewById(R.id.title);
         description = (MaterialEditText) findViewById(R.id.description);
         date = (MaterialEditText) findViewById(R.id.date);
+        seekBar = (SeekBar) findViewById(R.id.status);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        seekBar.setMax(currentMax / currentStep);
+        seekBar.incrementProgressBy(currentStep);
+        seekBar.setProgress(0);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isUpdate)
                 {
-                    setData(title.getText().toString(), description.getText().toString(), date.getText().toString());
+                    setData(title.getText().toString(), description.getText().toString(), date.getText().toString(), String.valueOf(seekBar.getProgress()));
                 }
                 else
                 {
-                    updateData(title.getText().toString(), description.getText().toString(), date.getText().toString());
+                    updateData(title.getText().toString(), description.getText().toString(), date.getText().toString(), String.valueOf(seekBar.getProgress()));
                     isUpdate = !isUpdate;
                 }
             }
@@ -117,9 +116,9 @@ public class Todolist extends AppCompatActivity {
                 });
     }
 
-    private void updateData(String title, String description, String date) {
+    private void updateData(String title, String description, String date, String status) {
         db.collection("ToDoList").document(idUpdate)
-                .update("title", title, "description", description, "date", date)
+                .update("title", title, "description", description, "date", date, "status", status)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -136,13 +135,14 @@ public class Todolist extends AppCompatActivity {
                 });
     }
 
-    private void setData(String title, String description, String date) {
+    private void setData(String title, String description, String date, String status) {
         String id = UUID.randomUUID().toString();
         Map<String, Object> todo = new HashMap<>();
         todo.put("id", id);
         todo.put("title", title);
         todo.put("description", description);
         todo.put("date", date);
+        todo.put("status", status);
 
         db.collection("ToDoList").document(id)
                 .set(todo).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -167,7 +167,8 @@ public class Todolist extends AppCompatActivity {
                             ToDo toDo = new ToDo(doc.getString("id"),
                                                 doc.getString("title"),
                                                 doc.getString("description"),
-                                                doc.getString("date"));
+                                                doc.getString("date"),
+                                                doc.getString("status"));
                             toDoList.add(toDo);
                         }
                         adapter = new ListItemAdapter(Todolist.this, toDoList);

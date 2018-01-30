@@ -1,4 +1,4 @@
-package eu.epitech.todolosit.Adapter;
+package eu.epitech.todolist.Adapter;
 
 import android.view.View;
 

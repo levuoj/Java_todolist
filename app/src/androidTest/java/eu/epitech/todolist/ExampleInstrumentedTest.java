@@ -1,4 +1,4 @@
-package eu.epitech.todolosit;
+package eu.epitech.todolist;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
