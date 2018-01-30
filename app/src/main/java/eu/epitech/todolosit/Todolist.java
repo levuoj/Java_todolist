@@ -4,66 +4,182 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.*;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.UUID;
+
+import dmax.dialog.SpotsDialog;
+import eu.epitech.todolosit.Adapter.ListItemAdapter;
+import eu.epitech.todolosit.Model.ToDo;
 
 public class Todolist extends AppCompatActivity {
+
+    List<ToDo> toDoList = new ArrayList<>();
+    FirebaseFirestore db;
+
+    RecyclerView listItem;
+    RecyclerView.LayoutManager layoutManager;
+
+    FloatingActionButton fab;
+
+    public MaterialEditText title;
+    public MaterialEditText description;
+    public MaterialEditText date;
+
+    public boolean isUpdate = false;
+    public String idUpdate = "";
+
+    ListItemAdapter adapter;
+
+    SpotsDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todolist);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        // perso
-        final List<Task> taskList = new ArrayList<Task>();
-        ListView tasks = (ListView) findViewById(R.id.tasks);
-        // perso
+        db = FirebaseFirestore.getInstance();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        dialog = new SpotsDialog(this);
+        title = (MaterialEditText) findViewById(R.id.title);
+        description = (MaterialEditText) findViewById(R.id.description);
+        date = (MaterialEditText) findViewById(R.id.date);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Task task = new Task("Titre", "contenue de folie", new Date());
-                taskList.add(task);
-                Snackbar.make(view, "New taske", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+            public void onClick(View v) {
+                if (!isUpdate)
+                {
+                    setData(title.getText().toString(), description.getText().toString(), date.getText().toString());
+                }
+                else
+                {
+                    updateData(title.getText().toString(), description.getText().toString(), date.getText().toString());
+                    isUpdate = !isUpdate;
+                }
+            }
+        });
+
+        listItem = (RecyclerView) findViewById(R.id.listTodo);
+        listItem.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        listItem.setLayoutManager(layoutManager);
+
+        loadData();
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getTitle() == "DELETE")
+            deleteItem(item.getOrder());
+        return super.onContextItemSelected(item);
+    }
+
+    private void deleteItem(int index) {
+        db.collection("ToDoList")
+                .document(toDoList.get(index).getId())
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        loadData();
+                    }
+                });
+    }
+
+    private void updateData(String title, String description, String date) {
+        db.collection("ToDoList").document(idUpdate)
+                .update("title", title, "description", description, "date", date)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(Todolist.this, "Updated !", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        db.collection("ToDoList").document(idUpdate)
+                .addSnapshotListener(new EventListener<DocumentSnapshot>() {
+                    @Override
+                    public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                        loadData();
+                    }
+                });
+    }
+
+    private void setData(String title, String description, String date) {
+        String id = UUID.randomUUID().toString();
+        Map<String, Object> todo = new HashMap<>();
+        todo.put("id", id);
+        todo.put("title", title);
+        todo.put("description", description);
+        todo.put("date", date);
+
+        db.collection("ToDoList").document(id)
+                .set(todo).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                loadData();
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_todolist, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    private void loadData() {
+        dialog.show();
+        if (toDoList.size() > 0)
+            toDoList.clear();
+        db.collection("ToDoList")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        for (DocumentSnapshot doc: task.getResult())
+                        {
+                            ToDo toDo = new ToDo(doc.getString("id"),
+                                                doc.getString("title"),
+                                                doc.getString("description"),
+                                                doc.getString("date"));
+                            toDoList.add(toDo);
+                        }
+                        adapter = new ListItemAdapter(Todolist.this, toDoList);
+                        listItem.setAdapter(adapter);
+                        dialog.dismiss();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(Todolist.this, "+e.getMessage()", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
