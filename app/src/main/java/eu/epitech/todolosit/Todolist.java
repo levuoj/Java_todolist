@@ -25,15 +25,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import org.w3c.dom.Document;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,7 +47,6 @@ public class Todolist extends AppCompatActivity {
 
     public MaterialEditText title;
     public MaterialEditText description;
-    public MaterialEditText date;
 
     public boolean isUpdate = false;
     public String idUpdate = "";
@@ -72,7 +65,6 @@ public class Todolist extends AppCompatActivity {
         dialog = new SpotsDialog(this);
         title = (MaterialEditText) findViewById(R.id.title);
         description = (MaterialEditText) findViewById(R.id.description);
-        date = (MaterialEditText) findViewById(R.id.date);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,11 +72,11 @@ public class Todolist extends AppCompatActivity {
             public void onClick(View v) {
                 if (!isUpdate)
                 {
-                    setData(title.getText().toString(), description.getText().toString(), date.getText().toString());
+                    setData(title.getText().toString(), description.getText().toString());
                 }
                 else
                 {
-                    updateData(title.getText().toString(), description.getText().toString(), date.getText().toString());
+                    updateData(title.getText().toString(), description.getText().toString());
                     isUpdate = !isUpdate;
                 }
             }
@@ -117,9 +109,9 @@ public class Todolist extends AppCompatActivity {
                 });
     }
 
-    private void updateData(String title, String description, String date) {
+    private void updateData(String title, String description) {
         db.collection("ToDoList").document(idUpdate)
-                .update("title", title, "description", description, "date", date)
+                .update("title", title, "description")
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
@@ -136,13 +128,12 @@ public class Todolist extends AppCompatActivity {
                 });
     }
 
-    private void setData(String title, String description, String date) {
+    private void setData(String title, String description) {
         String id = UUID.randomUUID().toString();
         Map<String, Object> todo = new HashMap<>();
         todo.put("id", id);
         todo.put("title", title);
         todo.put("description", description);
-        todo.put("date", date);
 
         db.collection("ToDoList").document(id)
                 .set(todo).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -166,8 +157,7 @@ public class Todolist extends AppCompatActivity {
                         {
                             ToDo toDo = new ToDo(doc.getString("id"),
                                                 doc.getString("title"),
-                                                doc.getString("description"),
-                                                doc.getString("date"));
+                                                doc.getString("description"));
                             toDoList.add(toDo);
                         }
                         adapter = new ListItemAdapter(Todolist.this, toDoList);

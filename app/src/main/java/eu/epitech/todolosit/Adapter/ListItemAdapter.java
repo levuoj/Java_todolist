@@ -23,7 +23,6 @@ class ListItemViewHolder extends ViewHolder implements View.OnClickListener, Vie
     ItemClickListener itemClickListener;
     TextView item_title;
     TextView item_description;
-    TextView item_date;
 
     public ListItemViewHolder(View itemView) {
         super(itemView);
@@ -32,7 +31,6 @@ class ListItemViewHolder extends ViewHolder implements View.OnClickListener, Vie
 
         item_title = (TextView) itemView.findViewById(R.id.item_title);
         item_description = (TextView) itemView.findViewById(R.id.item_description);
-        item_date = (TextView) itemView.findViewById(R.id.item_date);
     }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
@@ -72,14 +70,12 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
     public void onBindViewHolder(ListItemViewHolder holder, int position) {
         holder.item_title.setText(todoList.get(position).getTitle());
         holder.item_description.setText(todoList.get(position).getDescription());
-        holder.item_date.setText(todoList.get(position).getDate());
 
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
                 todolist.title.setText(todoList.get(position).getTitle());
                 todolist.description.setText(todoList.get(position).getDescription());
-                todolist.date.setText(todoList.get(position).getDate());
 
                 todolist.isUpdate = true;
                 todolist.idUpdate = todoList.get(position).getId();
