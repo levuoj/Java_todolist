@@ -9,12 +9,12 @@ public class ToDo {
     private String title;
     private String description;
     private String date;
-    private String status;
+    private Integer status;
 
     public ToDo() {
     }
 
-    public ToDo(String id, String title, String description, String date, String status) {
+    public ToDo(String id, String title, String description, String date, Integer status) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -38,5 +38,5 @@ public class ToDo {
         return title;
     }
 
-    public String getStatus() { return status; }
+    public Integer getStatus() { return status; }
 }

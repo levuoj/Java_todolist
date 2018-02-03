@@ -3,11 +3,15 @@ package eu.epitech.todolist;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.MenuItem;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -31,6 +35,8 @@ import eu.epitech.todolist.Adapter.ListItemAdapter;
 import eu.epitech.todolist.Model.ToDo;
 
 public class Todolist extends AppCompatActivity {
+
+    LinearLayout one;
 
     List<ToDo> toDoList = new ArrayList<>();
     FirebaseFirestore db;
@@ -63,12 +69,37 @@ public class Todolist extends AppCompatActivity {
         int currentMax = 20;
         int currentStep = 10;
 
+        one = (LinearLayout) findViewById(R.id.layout_info);
+
         dialog = new SpotsDialog(this);
         title = (MaterialEditText) findViewById(R.id.title);
         description = (MaterialEditText) findViewById(R.id.description);
         date = (MaterialEditText) findViewById(R.id.date);
         seekBar = (SeekBar) findViewById(R.id.status);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        date.addTextChangedListener(new TextWatcher() {
+            int len = 0;
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                String str = date.getText().toString();
+                len = str.length();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String str = date.getText().toString();
+                if ((str.length() == 2 && len < str.length()) ||
+                        str.length() == 5) {
+                    date.append("/");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         seekBar.setMax(currentMax / currentStep);
         seekBar.incrementProgressBy(currentStep);
@@ -79,11 +110,11 @@ public class Todolist extends AppCompatActivity {
             public void onClick(View v) {
                 if (!isUpdate)
                 {
-                    setData(title.getText().toString(), description.getText().toString(), date.getText().toString(), String.valueOf(seekBar.getProgress()));
+                    setData(title.getText().toString(), description.getText().toString(), date.getText().toString(), seekBar.getProgress());
                 }
                 else
                 {
-                    updateData(title.getText().toString(), description.getText().toString(), date.getText().toString(), String.valueOf(seekBar.getProgress()));
+                    updateData(title.getText().toString(), description.getText().toString(), date.getText().toString(), seekBar.getProgress());
                     isUpdate = !isUpdate;
                 }
             }
@@ -116,7 +147,13 @@ public class Todolist extends AppCompatActivity {
                 });
     }
 
-    private void updateData(String title, String description, String date, String status) {
+    private void updateData(String title, String description, String date, Integer status) {
+        if (title.length() == 0) {
+            Snackbar snackbar = Snackbar
+                    .make(one, "Title is mandatory", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            return;
+        }
         db.collection("ToDoList").document(idUpdate)
                 .update("title", title, "description", description, "date", date, "status", status)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -135,7 +172,13 @@ public class Todolist extends AppCompatActivity {
                 });
     }
 
-    private void setData(String title, String description, String date, String status) {
+    private void setData(String title, String description, String date, Integer status) {
+        if (title.length() == 0) {
+            Snackbar snackbar = Snackbar
+                    .make(one, "Title is mandatory", Snackbar.LENGTH_LONG);
+            snackbar.show();
+            return;
+        }
         String id = UUID.randomUUID().toString();
         Map<String, Object> todo = new HashMap<>();
         todo.put("id", id);
@@ -168,7 +211,7 @@ public class Todolist extends AppCompatActivity {
                                                 doc.getString("title"),
                                                 doc.getString("description"),
                                                 doc.getString("date"),
-                                                doc.getString("status"));
+                                                doc.getLong("status").intValue());
                             toDoList.add(toDo);
                         }
                         adapter = new ListItemAdapter(Todolist.this, toDoList);
@@ -183,4 +226,7 @@ public class Todolist extends AppCompatActivity {
                     }
                 });
     }
+
+    //   one.setVisibility(View.GONE);
+
 }

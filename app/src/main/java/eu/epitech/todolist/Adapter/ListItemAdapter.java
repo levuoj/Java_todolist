@@ -6,6 +6,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.List;
@@ -34,7 +35,7 @@ class ListItemViewHolder extends ViewHolder implements View.OnClickListener, Vie
         item_title = (TextView) itemView.findViewById(R.id.item_title);
         item_description = (TextView) itemView.findViewById(R.id.item_description);
         item_date = (TextView) itemView.findViewById(R.id.item_date);
-        item_status = (TextView) itemView.findViewById(R.id.item_date);
+        item_status = (TextView) itemView.findViewById(R.id.item_status);
     }
 
     public void setItemClickListener(ItemClickListener itemClickListener) {
@@ -75,7 +76,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
         holder.item_title.setText(todoList.get(position).getTitle());
         holder.item_description.setText(todoList.get(position).getDescription());
         holder.item_date.setText(todoList.get(position).getDate());
-        holder.item_status.setText(todoList.get(position).getStatus());
+        holder.item_status.setText("" + todoList.get(position).getStatus());
 
         holder.setItemClickListener(new ItemClickListener() {
             @Override
@@ -83,7 +84,7 @@ public class ListItemAdapter extends RecyclerView.Adapter<ListItemViewHolder> {
                 todolist.title.setText(todoList.get(position).getTitle());
                 todolist.description.setText(todoList.get(position).getDescription());
                 todolist.date.setText(todoList.get(position).getDate());
-                todolist.status.setText(todoList.get(position).getStatus());
+                todolist.seekBar.setProgress(todoList.get(position).getStatus());
 
                 todolist.isUpdate = true;
                 todolist.idUpdate = todoList.get(position).getId();
