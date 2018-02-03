@@ -2,6 +2,7 @@ package eu.epitech.todolist;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +37,7 @@ import eu.epitech.todolist.Model.ToDo;
 
 public class Todolist extends AppCompatActivity {
 
-    LinearLayout one;
+    CollapsingToolbarLayout one;
 
     List<ToDo> toDoList = new ArrayList<>();
     FirebaseFirestore db;
@@ -69,7 +70,7 @@ public class Todolist extends AppCompatActivity {
         int currentMax = 20;
         int currentStep = 10;
 
-        one = (LinearLayout) findViewById(R.id.layout_info);
+        one = (CollapsingToolbarLayout) findViewById(R.id.layout_info);
 
         dialog = new SpotsDialog(this);
         title = (MaterialEditText) findViewById(R.id.title);

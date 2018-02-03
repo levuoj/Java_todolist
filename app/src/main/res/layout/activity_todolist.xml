@@ -13,65 +13,80 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <LinearLayout
+
+        <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/layout_info"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_collapseMode="none"
+            app:elevation="0dp"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            >
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/title"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Title"
-                android:inputType="text"
-                android:textColorHint="@android:color/white"
-                android:textSize="20sp"
-                app:met_baseColor="@android:color/white"
-                app:met_floatingLabel="highlight"
-                app:met_primaryColor="@android:color/white"
-                app:met_singleLineEllipsis="true" />
+                android:orientation="vertical"
+                android:paddingBottom="56dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="16dp"
+                android:paddingTop="16dp"
+                app:layout_collapseParallaxMultiplier="1.0">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Description"
-                android:inputType="textMultiLine"
-                android:textColorHint="@android:color/white"
-                android:textSize="10sp"
-                app:met_baseColor="@android:color/white"
-                app:met_floatingLabel="highlight"
-                app:met_primaryColor="@android:color/white"
-                app:met_singleLineEllipsis="true" />
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:inputType="text"
+                    android:textColorHint="@android:color/white"
+                    android:textSize="20sp"
+                    app:met_baseColor="@android:color/white"
+                    app:met_floatingLabel="highlight"
+                    app:met_primaryColor="@android:color/white"
+                    app:met_singleLineEllipsis="true" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="todo                                    doing                                   done"
-                android:textStyle="italic" />
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description"
+                    android:inputType="textMultiLine"
+                    android:textColorHint="@android:color/white"
+                    android:textSize="10sp"
+                    app:met_baseColor="@android:color/white"
+                    app:met_floatingLabel="highlight"
+                    app:met_primaryColor="@android:color/white"
+                    app:met_singleLineEllipsis="true" />
 
-            <SeekBar
-                android:id="@+id/status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="todo                                    doing                                   done"
+                    android:textStyle="italic" />
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="MM/DD/YYYY"
-                android:inputType="date"
-                android:textColorHint="@android:color/white"
-                android:textSize="10sp"
-                app:met_baseColor="@android:color/white"
-                app:met_floatingLabel="highlight"
-                app:met_primaryColor="@android:color/white"
-                app:met_singleLineEllipsis="true" />
+                <SeekBar
+                    android:id="@+id/status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        </LinearLayout>
+                <com.rengwuxian.materialedittext.MaterialEditText
+                    android:id="@+id/date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="MM/DD/YYYY"
+                    android:inputType="date"
+                    android:textColorHint="@android:color/white"
+                    android:textSize="10sp"
+                    app:met_baseColor="@android:color/white"
+                    app:met_floatingLabel="highlight"
+                    app:met_primaryColor="@android:color/white"
+                    app:met_singleLineEllipsis="true" />
+
+            </LinearLayout>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -91,7 +106,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/listTodo"
         android:layout_width="match_parent"
-        android:layout_height="240dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:layout_editor_absoluteY="327dp">
