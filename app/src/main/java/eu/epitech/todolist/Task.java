@@ -1,4 +1,4 @@
-package eu.epitech.todolosit;
+package eu.epitech.todolist;
 
 import java.util.Date;
 
