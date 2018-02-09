@@ -34,31 +34,118 @@ import dmax.dialog.SpotsDialog;
 import eu.epitech.todolist.Adapter.ListItemAdapter;
 import eu.epitech.todolist.Model.ToDo;
 
+/**
+ * Todolist is the Core of the project
+ * @author  Anthony
+ * @version 2.0
+ */
 public class Todolist extends AppCompatActivity {
 
+    /**
+     * Layout of activity_todolist
+     * @see Todolist#onCreate(Bundle)
+     * @see Todolist#updateData(String, String, String, Integer)
+     * @see Todolist#setData(String, String, String, Integer)
+     */
     LinearLayout one;
 
+    /**
+     * List of Tasks
+     * @see Todolist#deleteItem(int)
+     * @see Todolist#loadData()
+     */
     List<ToDo> toDoList = new ArrayList<>();
+
+    /**
+     * The DataBase using Firebase
+     * @see Todolist#onCreate(Bundle)
+     * @see Todolist#deleteItem(int)
+     * @see Todolist#updateData(String, String, String, Integer)
+     * @see Todolist#setData(String, String, String, Integer)
+     * @see Todolist#loadData()
+     */
     FirebaseFirestore db;
 
+    /**
+     * The items in the View
+     * @see Todolist#onCreate(Bundle)
+     * @see Todolist#loadData()
+     */
     RecyclerView listItem;
+
+    /**
+     * Manage the Layout
+     * @see Todolist#onCreate(Bundle)
+     */
     RecyclerView.LayoutManager layoutManager;
 
+    /**
+     * Button to update/create a Task
+     * @see Todolist#onCreate(Bundle)
+     */
     FloatingActionButton fab;
 
+    /**
+     * Task's Title
+     * @see Todolist#onCreate(Bundle)
+     */
     public MaterialEditText title;
+
+    /**
+     * Task's Description
+     * @see Todolist#onCreate(Bundle)
+     */
     public MaterialEditText description;
+
+    /**
+     * Task's Description
+     * @see Todolist#onCreate(Bundle)
+     */
     public MaterialEditText date;
-    public MaterialEditText status;
+
+    /**
+     * Task's Description
+     * @see Todolist#onCreate(Bundle)
+     */
     public SeekBar seekBar;
 
+    /**
+     * True if is Update, False otherwise
+     * @see Todolist#onCreate(Bundle)
+     */
     public boolean isUpdate = false;
+
+    /**
+     * Unique ID of the version
+     * @see Todolist#onCreate(Bundle)
+     */
     public String idUpdate = "";
 
+    /**
+     * Adapter used when DataBase is loaded
+     * @see Todolist#db
+     * @see Todolist#loadData()
+     */
     ListItemAdapter adapter;
 
+    /**
+     * Dialog used when DataBase is loaded
+     * @see Todolist#db
+     * @see Todolist#loadData()
+     */
     SpotsDialog dialog;
 
+    /**
+     * Constructor
+     */
+    public Todolist() {
+    }
+
+    /**
+     * Called when the activity is starting.
+     * @param savedInstanceState
+     * If the activity is being re-initialized after previously being shut down then this Bundle contains the data it most recently supplied in onSaveInstanceState(Bundle). Note: Otherwise it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,14 +156,14 @@ public class Todolist extends AppCompatActivity {
         int currentMax = 20;
         int currentStep = 10;
 
-        one = (LinearLayout) findViewById(R.id.layout_info);
+        one = findViewById(R.id.layout_info);
 
         dialog = new SpotsDialog(this);
-        title = (MaterialEditText) findViewById(R.id.title);
-        description = (MaterialEditText) findViewById(R.id.description);
-        date = (MaterialEditText) findViewById(R.id.date);
-        seekBar = (SeekBar) findViewById(R.id.status);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        title = findViewById(R.id.title);
+        date = findViewById(R.id.date);
+        fab = findViewById(R.id.fab);
+        description = findViewById(R.id.description);
+        seekBar = findViewById(R.id.status);
 
         date.addTextChangedListener(new TextWatcher() {
             int len = 0;
@@ -120,7 +207,7 @@ public class Todolist extends AppCompatActivity {
             }
         });
 
-        listItem = (RecyclerView) findViewById(R.id.listTodo);
+        listItem = findViewById(R.id.listTodo);
         listItem.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         listItem.setLayoutManager(layoutManager);
@@ -128,6 +215,13 @@ public class Todolist extends AppCompatActivity {
         loadData();
     }
 
+    /**
+     * This hook is called whenever an item in a context menu is selected.
+     * @param item
+     * The context menu item that was selected.
+     * @return
+     * boolean Return false to allow normal context menu processing to proceed, true to consume it here.
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         if (item.getTitle() == "DELETE")
@@ -135,6 +229,11 @@ public class Todolist extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
+    /**
+     * Delete a Task from DataBase
+     * @param index
+     * The position of the Task to delete in DataBase
+     */
     private void deleteItem(int index) {
         db.collection("ToDoList")
                 .document(toDoList.get(index).getId())
@@ -147,6 +246,17 @@ public class Todolist extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Udpddate a Task
+     * @param title
+     * Task's title
+     * @param description
+     * Task's description
+     * @param date
+     * Task's date
+     * @param status
+     * Task's status
+     */
     private void updateData(String title, String description, String date, Integer status) {
         if (title.length() == 0) {
             Snackbar snackbar = Snackbar
@@ -172,6 +282,17 @@ public class Todolist extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Create a Task
+     * @param title
+     * Task's title
+     * @param description
+     * Task's description
+     * @param date
+     * Task's date
+     * @param status
+     * Task's status
+     */
     private void setData(String title, String description, String date, Integer status) {
         if (title.length() == 0) {
             Snackbar snackbar = Snackbar
@@ -196,6 +317,9 @@ public class Todolist extends AppCompatActivity {
         });
     }
 
+    /**
+     * Load the DataBase
+     */
     private void loadData() {
         dialog.show();
         if (toDoList.size() > 0)
